@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgNetwork", "bgNetwork\bgNetwork.vcproj", "{3DD9A0D1-0BE9-4CA0-8E69-F8C665CB27BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. 技术验证", "00. 技术验证", "{B112FBF0-322A-435D-B1DA-AB82150F7E81}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgNetworkClient", "bgNetworkClient\bgNetworkClient.vcproj", "{626F2324-A55E-46E8-A723-9403B39F12F2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DD9A0D1-0BE9-4CA0-8E69-F8C665CB27BD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3DD9A0D1-0BE9-4CA0-8E69-F8C665CB27BD}.Debug|Win32.Build.0 = Debug|Win32
+		{3DD9A0D1-0BE9-4CA0-8E69-F8C665CB27BD}.Release|Win32.ActiveCfg = Release|Win32
+		{3DD9A0D1-0BE9-4CA0-8E69-F8C665CB27BD}.Release|Win32.Build.0 = Release|Win32
+		{626F2324-A55E-46E8-A723-9403B39F12F2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{626F2324-A55E-46E8-A723-9403B39F12F2}.Debug|Win32.Build.0 = Debug|Win32
+		{626F2324-A55E-46E8-A723-9403B39F12F2}.Release|Win32.ActiveCfg = Release|Win32
+		{626F2324-A55E-46E8-A723-9403B39F12F2}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
