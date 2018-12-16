@@ -7,6 +7,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. 技术验证", "00. 技
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgNetworkClient", "bgNetworkClient\bgNetworkClient.vcproj", "{626F2324-A55E-46E8-A723-9403B39F12F2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. 服务外壳", "01. 服务外壳", "{A7FAE7B2-D415-4D76-A1A7-1C795A84A87E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. 业务插件", "02. 业务插件", "{3B6046D3-3F2F-4404-8D67-E8B049B1EBBC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgNetServer", "bgNetServer\bgNetServer.vcproj", "{7AE902A6-270E-401C-8746-4578689341B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,8 +27,17 @@ Global
 		{626F2324-A55E-46E8-A723-9403B39F12F2}.Debug|Win32.Build.0 = Debug|Win32
 		{626F2324-A55E-46E8-A723-9403B39F12F2}.Release|Win32.ActiveCfg = Release|Win32
 		{626F2324-A55E-46E8-A723-9403B39F12F2}.Release|Win32.Build.0 = Release|Win32
+		{7AE902A6-270E-401C-8746-4578689341B9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7AE902A6-270E-401C-8746-4578689341B9}.Debug|Win32.Build.0 = Debug|Win32
+		{7AE902A6-270E-401C-8746-4578689341B9}.Release|Win32.ActiveCfg = Release|Win32
+		{7AE902A6-270E-401C-8746-4578689341B9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3DD9A0D1-0BE9-4CA0-8E69-F8C665CB27BD} = {B112FBF0-322A-435D-B1DA-AB82150F7E81}
+		{626F2324-A55E-46E8-A723-9403B39F12F2} = {B112FBF0-322A-435D-B1DA-AB82150F7E81}
+		{7AE902A6-270E-401C-8746-4578689341B9} = {A7FAE7B2-D415-4D76-A1A7-1C795A84A87E}
 	EndGlobalSection
 EndGlobal

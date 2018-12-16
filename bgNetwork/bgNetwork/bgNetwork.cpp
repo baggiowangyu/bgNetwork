@@ -39,6 +39,7 @@ public:
 				//std::cout<<"Recv "<<recv_len<<" bytes data : "<<recv_buf<<std::endl;
 
 				// 这里可以增加一个业务处理入口，将接收到的数据传进去，由业务模块负责缓冲数据包，拆分协议包，任务分发
+				// 关键是如何主动断开这个连接，让设备下线
 
 				int send_len = socket().sendBytes(recv_buf, recv_len);
 				//std::cout<<"Send "<<recv_len<<" bytes data : "<<recv_buf<<std::endl;
