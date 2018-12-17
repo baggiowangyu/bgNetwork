@@ -204,6 +204,22 @@
 		<Filter
 			Name="01. ÒµÎñÄ£¿é"
 			>
+			<File
+				RelativePath=".\bgDeviceBusiness.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\bgDeviceBusiness.h"
+				>
+			</File>
+			<File
+				RelativePath=".\bgDeviceManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\bgDeviceManager.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

@@ -9,6 +9,7 @@
 #include "Poco\Net\StreamSocket.h"
 #include "Poco\Timespan.h"
 
+#include "bgDeviceManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -24,6 +25,8 @@ public:
 	{
 
 	}
+
+	void SetDeviceManager(bgDeviceManager *dev_manager) { device_manager_ = dev_manager; }
 
 	void run(void)
 	{
@@ -51,6 +54,9 @@ public:
 			}
 		}
 	}
+
+public:
+	bgDeviceManager *device_manager_;
 };
 
 
@@ -65,8 +71,14 @@ class bgTCPServer : public Poco::Net::TCPServerConnectionFactory
 public:
 	inline Poco::Net::TCPServerConnection* createConnection(const Poco::Net::StreamSocket& socket)
 	{
-		return new bgTCPServerConnection(socket);
+		Poco::Net::TCPServerConnection *device_connection = new bgTCPServerConnection(socket);
+		return device_connection;
 	}
+
+public:
+	// 这里需要有一个设备管理模块，用于统计在线设备数量
+	// 以及需要一个线程来检查设备心跳是否超时
+	bgDeviceManager device_manager_;
 };
 
 
