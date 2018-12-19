@@ -1,6 +1,8 @@
 #ifndef _bgDeviceBusiness_H_
 #define _bgDeviceBusiness_H_
 
+#include "Poco/Buffer.h"
+
 #define MAKE_MAGIC_CODE(a,b,c,d)	(a | (b<<8) | (c<<16) | (d<<24))
 #define NETWORK_MAGIC_CODE			MAKE_MAGIC_CODE('G', 'X', 'X', 'H')
 
@@ -22,6 +24,8 @@ typedef enum
 
 } enNetCmd;
 
+
+
 #pragma pack(1)
 typedef struct _GxxGmDevMsgHead_V1_
 {
@@ -38,21 +42,27 @@ typedef struct _GxxGmDevMsgHeatBeat_V1_
 
 #pragma pack()
 
-class bgDeviceBusiness
+class bgDevice
 {
 public:
-	bgDeviceBusiness();
-	~bgDeviceBusiness();
+	bgDevice();
+	~bgDevice();
 
 public:
-	int HandleMessage(const unsigned char *msg_data, int msg_len);
+	int HandleMessage(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
 
 private:
-	int HandleHeartBeat();
-	int HandleDeviceInfo();
-	int HandleDeviceState();
-	int HandleDeviceLocation();
-	int HandleDeviceSos();
+	int HandleHeartBeat(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleDeviceInfo(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleDeviceState(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleDeviceLocation(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleDeviceSos(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+
+private:
+	bool HasPacket();
+
+public:
+	Poco::FIFOBuffer *device_msg_buffer_;
 };
 
 #endif//_bgDeviceBusiness_H_

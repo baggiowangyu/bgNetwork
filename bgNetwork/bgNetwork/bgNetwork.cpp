@@ -10,6 +10,7 @@
 #include "Poco\Timespan.h"
 
 #include "bgDeviceManager.h"
+#include "bgDeviceBusiness.h"
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -23,7 +24,8 @@ public:
 	bgTCPServerConnection(const Poco::Net::StreamSocket& s)
 		: Poco::Net::TCPServerConnection(s)
 	{
-
+		// 这里应该还创建一个线程，用于发送心跳请求
+		// 算了，我们不发心跳请求
 	}
 
 	void SetDeviceManager(bgDeviceManager *dev_manager) { device_manager_ = dev_manager; }
@@ -38,17 +40,31 @@ public:
 		{
 			try
 			{
-				int recv_len = socket().receiveBytes(recv_buf, 4096);
-				//std::cout<<"Recv "<<recv_len<<" bytes data : "<<recv_buf<<std::endl;
+				char *response_data = NULL;
+				int response_data_len = 0;
+				bool need_response = false;
+				while (true)
+				{
+					// 接收消息
+					int recv_len = socket().receiveBytes(recv_buf, 4096);
 
-				// 这里可以增加一个业务处理入口，将接收到的数据传进去，由业务模块负责缓冲数据包，拆分协议包，任务分发
-				// 关键是如何主动断开这个连接，让设备下线
+					// 处理消息
+					int errCode = device_manager_->HandleMessage(recv_buf, recv_len, &response_data, &response_data_len, &need_response);
+					if (errCode == ERR_HANDLEMSG_SUCCESS)
+						break;
+				}
 
-				int send_len = socket().sendBytes(recv_buf, recv_len);
-				//std::cout<<"Send "<<recv_len<<" bytes data : "<<recv_buf<<std::endl;
+				if (need_response)
+				{
+					socket().sendBytes(response_data, response_data_len);
+					delete [] response_data;
+					response_data = 0;
+				}
 			}
 			catch (Poco::Exception &e)
 			{
+				// 遇到异常了，记录相关的异常信息到日志
+				// 告诉设备管理模块，断开连接、设备下线
 				std::cout<<client_ip.c_str()<<" "<<e.what()<<std::endl;
 				break;
 			}
@@ -71,8 +87,10 @@ class bgTCPServer : public Poco::Net::TCPServerConnectionFactory
 public:
 	inline Poco::Net::TCPServerConnection* createConnection(const Poco::Net::StreamSocket& socket)
 	{
-		Poco::Net::TCPServerConnection *device_connection = new bgTCPServerConnection(socket);
-		return device_connection;
+		bgTCPServerConnection *device_connection = new bgTCPServerConnection(socket);
+		device_connection->SetDeviceManager(device_manager_);
+
+		return (Poco::Net::TCPServerConnection*)device_connection;
 	}
 
 public:
