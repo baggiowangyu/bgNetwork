@@ -11,6 +11,7 @@
 
 #include "bgDeviceManager.h"
 #include "bgDeviceBusiness.h"
+#include "bgDeviceDef.h"
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -43,22 +44,22 @@ public:
 				char *response_data = NULL;
 				int response_data_len = 0;
 				bool need_response = false;
+
 				while (true)
 				{
 					// 接收消息
 					int recv_len = socket().receiveBytes(recv_buf, 4096);
 
 					// 处理消息
-					int errCode = device_manager_->HandleMessage(recv_buf, recv_len, &response_data, &response_data_len, &need_response);
-					if (errCode == ERR_HANDLEMSG_SUCCESS)
-						break;
-				}
-
-				if (need_response)
-				{
-					socket().sendBytes(response_data, response_data_len);
-					delete [] response_data;
-					response_data = 0;
+					int errCode = device_manager_->HandleMessage(client_ip.c_str(), recv_buf, recv_len, &response_data, &response_data_len, &need_response);
+					
+					if (need_response)
+					{
+						socket().sendBytes(response_data, response_data_len);
+						delete [] response_data;
+						response_data = 0;
+						need_response = false;
+					}
 				}
 			}
 			catch (Poco::Exception &e)
@@ -88,7 +89,7 @@ public:
 	inline Poco::Net::TCPServerConnection* createConnection(const Poco::Net::StreamSocket& socket)
 	{
 		bgTCPServerConnection *device_connection = new bgTCPServerConnection(socket);
-		device_connection->SetDeviceManager(device_manager_);
+		device_connection->SetDeviceManager(&device_manager_);
 
 		return (Poco::Net::TCPServerConnection*)device_connection;
 	}

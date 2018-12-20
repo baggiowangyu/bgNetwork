@@ -1,10 +1,11 @@
 #include "bgDeviceBusiness.h"
+#include "bgDeviceDef.h"
 
 // 512K设备缓存，用于缓存服务器发来的消息
 #define DEVICE_BUFFER_SIZE 512 * 1024
 
 bgDevice::bgDevice()
-: (new Poco::FIFOBuffer(DEVICE_BUFFER_SIZE))
+: device_msg_buffer_(new Poco::FIFOBuffer(DEVICE_BUFFER_SIZE))
 {
 	//
 }
@@ -14,12 +15,12 @@ bgDevice::~bgDevice()
 	//
 }
 
-int bgDevice::HandleMessage(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
+int bgDevice::HandleMessage(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
 {
 	int errCode = 0;
 
 	// 不管三七二十一，先追加到设备缓存里面
-	device_msg_buffer_->append(msg_data, msg_len);
+	device_msg_buffer_->write(msg_data, msg_len);
 
 	// 判断当前缓存中是否有完整的数据包
 	while (true)
@@ -75,43 +76,74 @@ int bgDevice::HandleMessage(const unsigned char *msg_data, int msg_len, char **r
 	return errCode;
 }
 
-int bgDevice::HandleHeartBeat(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
+int bgDevice::HandleHeartBeat(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
 {
 	int errCode = 0;
+	//std::cout<<"收到保活心跳..."<<std::endl;
 
 	// 更新此设备最后一次发上来的数据时间节点，使用Tick来计算
+	*response_data_len = sizeof(GxxGmDevMsgHead_V1);
+	*response_data = new char[*response_data_len];
+	GxxGmDevMsgHead_V1 *header = (GxxGmDevMsgHead_V1 *)(*response_data);
+
+	header->magic_ = NETWORK_MAGIC_CODE;
+	header->command_id_ = CMDID_RequstHeartBeat;
+	header->packet_size_ = *response_data_len;
 
 	*need_response = true;
 
 	return errCode;
 }
 
-int bgDevice::HandleDeviceInfo(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
+int bgDevice::HandleDeviceInfo(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
 {
 	int errCode = 0;
+	std::cout<<"收到设备基本信息..."<<std::endl;
+
+	// 上报观察者，收到设备信息
 
 	return errCode;
 }
 
-int bgDevice::HandleDeviceState(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
+int bgDevice::HandleDeviceState(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
 {
 	int errCode = 0;
+	std::cout<<"收到设备状态信息..."<<std::endl;
+
+	// 上报观察者，
 
 	return errCode;
 }
 
-int bgDevice::HandleDeviceLocation(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
+int bgDevice::HandleDeviceLocation(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
 {
 	int errCode = 0;
+	std::cout<<"收到设备定位信息..."<<std::endl;
+
+	// 上报观察者，
 
 	return errCode;
 }
 
-int bgDevice::HandleDeviceSos(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
+int bgDevice::HandleDeviceSos(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
 {
 	int errCode = 0;
+	std::cout<<"收到设备SOS..."<<std::endl;
+
+	// 上报观察者，
 
 	return errCode;
 }
 
+bool bgDevice::HasPacket()
+{
+	//std::cout<<"检查缓冲区内是否存在一个完整的协议包..."<<std::endl;
+	if (device_msg_buffer_->used() < GxxGmDevMsgHead_V1_Size)
+		return false;
 
+	GxxGmDevMsgHead_V1 *packet_header = (GxxGmDevMsgHead_V1 *)device_msg_buffer_->begin();
+	if (device_msg_buffer_->used() < packet_header->packet_size_)
+		return false;
+
+	return true;
+}

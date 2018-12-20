@@ -1,8 +1,10 @@
 #include "bgDeviceManager.h"
+#include "bgDeviceDef.h"
+#include "bgDeviceBusiness.h"
 
 bgDeviceManager::bgDeviceManager()
 {
-	//
+	// 构造的时候就开始
 }
 
 bgDeviceManager::~bgDeviceManager()
@@ -10,7 +12,7 @@ bgDeviceManager::~bgDeviceManager()
 	//
 }
 
-int bgDeviceManager::HandleMessage(const char *client_tag, const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
+int bgDeviceManager::HandleMessage(const char *client_tag, const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response)
 {
 	int errCode = 0;
 	
@@ -19,7 +21,7 @@ int bgDeviceManager::HandleMessage(const char *client_tag, const unsigned char *
 	if (iter != devices_.end())
 	{
 		// 找到设备了，扔进去处理
-		bgDevice *device = *iter->second;
+		bgDevice *device = iter->second;
 		errCode = device->HandleMessage(msg_data, msg_len, response_data, response_data_len, need_response);
 	}
 	else

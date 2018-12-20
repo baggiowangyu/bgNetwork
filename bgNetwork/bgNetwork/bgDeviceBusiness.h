@@ -1,46 +1,8 @@
 #ifndef _bgDeviceBusiness_H_
 #define _bgDeviceBusiness_H_
 
-#include "Poco/Buffer.h"
+#include "Poco/FIFOBuffer.h"
 
-#define MAKE_MAGIC_CODE(a,b,c,d)	(a | (b<<8) | (c<<16) | (d<<24))
-#define NETWORK_MAGIC_CODE			MAKE_MAGIC_CODE('G', 'X', 'X', 'H')
-
-typedef enum
-{
-	CMDID_RequstHeartBeat		= 10001001,
-	CMDID_ResponseHeartBeat		= 10002001,
-
-	CMDID_RequestRealplay		= 20001001,
-	CMDID_RequestTalkback		= 20001027,
-
-	CMDID_PostVioceUpData		= 3008,
-
-	CMDID_PostClientDeviceInfo	= 3022,
-	CMDID_PostDeviceInfo	= 3220,
-	CMDID_PostGpsInfo		= 3221,
-	CMDID_PostSosInfo		= 3222,
-	CMDID_PostDeviceState	= 3223
-
-} enNetCmd;
-
-
-
-#pragma pack(1)
-typedef struct _GxxGmDevMsgHead_V1_
-{
-	unsigned int magic_;
-	unsigned int packet_size_;
-	unsigned int command_id_;
-
-} GxxGmDevMsgHead_V1, *PGxxGmDevMsgHead_V1;
-
-typedef struct _GxxGmDevMsgHeatBeat_V1_
-{
-
-};
-
-#pragma pack()
 
 class bgDevice
 {
@@ -49,20 +11,25 @@ public:
 	~bgDevice();
 
 public:
-	int HandleMessage(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleMessage(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
 
 private:
-	int HandleHeartBeat(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
-	int HandleDeviceInfo(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
-	int HandleDeviceState(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
-	int HandleDeviceLocation(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
-	int HandleDeviceSos(const unsigned char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleHeartBeat(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleDeviceInfo(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleDeviceState(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleDeviceLocation(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
+	int HandleDeviceSos(const char *msg_data, int msg_len, char **response_data, int *response_data_len, bool *need_response);
 
 private:
 	bool HasPacket();
 
 public:
+	// 设备专用缓冲区
 	Poco::FIFOBuffer *device_msg_buffer_;
+
+	// 设备国标编码
+	std::string device_gbcode_;
+	// 最后一次收到设备消息的时间
 };
 
 #endif//_bgDeviceBusiness_H_
