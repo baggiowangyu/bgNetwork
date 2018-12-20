@@ -1,9 +1,10 @@
 #ifndef _bgDeviceDef_H_
 #define _bgDeviceDef_H_
 
-#define ERR_HANDLEMSG_SUCCESS		0
+#define ERR_HANDLEMSG_SUCCESS				0
 //#define ERR_HANDLEMSG_PROTOCOL_HEADER
-#define ERR_HANDLEMSG_NOT_A_PACKET	1
+#define ERR_HANDLEMSG_NOT_A_PACKET			1
+#define ERR_HANDLEMSG_NOT_SAME_DEVICE_ID	2
 
 #define MAKE_MAGIC_CODE(a,b,c,d)	(a | (b<<8) | (c<<16) | (d<<24))
 #define NETWORK_MAGIC_CODE			MAKE_MAGIC_CODE('G', 'X', 'X', 'H')
@@ -43,7 +44,8 @@ typedef struct _GxxGmDevMsgHeatBeat_V1_
 	unsigned char con_status_;	// 1:未注册 2:拨号中; 3:连接正常 此为无线连接状态 不是和中心的通信状态
 	unsigned char mode_status_;	// 0成功 1失败
 	char device_serial_[32];	// 
-};
+
+} GxxGmDevMsgHeatBeat_V1, *PGxxGmDevMsgHeatBeat_V1;
 
 #pragma pack()
 

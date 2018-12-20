@@ -3,11 +3,12 @@
 
 #include "Poco/FIFOBuffer.h"
 
+class bgDeviceManager;
 
 class bgDevice
 {
 public:
-	bgDevice();
+	bgDevice(bgDeviceManager *device_manager);
 	~bgDevice();
 
 public:
@@ -30,6 +31,9 @@ public:
 	// 设备国标编码
 	std::string device_gbcode_;
 	// 最后一次收到设备消息的时间
+
+private:
+	bgDeviceManager *device_manager_;
 };
 
 #endif//_bgDeviceBusiness_H_

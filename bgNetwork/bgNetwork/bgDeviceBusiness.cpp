@@ -1,11 +1,13 @@
 #include "bgDeviceBusiness.h"
 #include "bgDeviceDef.h"
+#include "bgDeviceManager.h"
 
 // 512K设备缓存，用于缓存服务器发来的消息
 #define DEVICE_BUFFER_SIZE 512 * 1024
 
-bgDevice::bgDevice()
+bgDevice::bgDevice(bgDeviceManager *device_manager)
 : device_msg_buffer_(new Poco::FIFOBuffer(DEVICE_BUFFER_SIZE))
+, device_manager_(device_manager)
 {
 	//
 }
@@ -46,6 +48,8 @@ int bgDevice::HandleMessage(const char *msg_data, int msg_len, char **response_d
 		case CMDID_PostClientDeviceInfo:
 			// 收到心跳包
 			errCode = HandleHeartBeat(packet_data, packet_data_len, response_data, response_data_len, need_response);
+
+			// 在这里处理心跳相关的返回值信息
 			break;
 		case CMDID_PostDeviceInfo:
 			// 收到设备信息
@@ -80,6 +84,21 @@ int bgDevice::HandleHeartBeat(const char *msg_data, int msg_len, char **response
 {
 	int errCode = 0;
 	//std::cout<<"收到保活心跳..."<<std::endl;
+
+	GxxGmDevMsgHeatBeat_V1 *heartbeat = (GxxGmDevMsgHeatBeat_V1 *)msg_data;
+
+	if (device_gbcode_.empty())
+	{
+		// 取出设备ID，保存，并且告知管理器，设备上线
+		device_gbcode_ = heartbeat->device_serial_;
+		device_manager_->DeviceOnline(device_gbcode_);
+	}
+	else
+	{
+		// 检查是否是同一个设备发送的信息，如果不是，则可能是数据错乱，可以将设备踢下线
+		if (device_gbcode_.compare(heartbeat->device_serial_) != 0)
+			return ERR_HANDLEMSG_NOT_SAME_DEVICE_ID;
+	}
 
 	// 更新此设备最后一次发上来的数据时间节点，使用Tick来计算
 	*response_data_len = sizeof(GxxGmDevMsgHead_V1);

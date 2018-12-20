@@ -27,7 +27,7 @@ int bgDeviceManager::HandleMessage(const char *client_tag, const char *msg_data,
 	else
 	{
 		// 没找到设备，新建一个设备
-		bgDevice *device = new bgDevice();
+		bgDevice *device = new bgDevice(this);
 		errCode = device->HandleMessage(msg_data, msg_len, response_data, response_data_len, need_response);
 	}
 

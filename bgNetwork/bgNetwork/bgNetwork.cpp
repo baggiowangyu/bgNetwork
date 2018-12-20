@@ -70,6 +70,8 @@ public:
 				break;
 			}
 		}
+
+		// 用client_ip.c_str()查找设备对象，然后找到设备ID
 	}
 
 public:
